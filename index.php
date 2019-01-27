@@ -16,15 +16,30 @@ class Zaposlenik
     }
 
     public function __set($property, $value) {
-        if (property_exists($this, $property)) {
+        if (isset($property)) {
             $this->$property = $value;
+        }else{
+            echo 'potrebno je unjeti sve podatke';
         }
 
         return $this;
     }
+
+    public function __construct($id, $ime, $prezime, $datumRodenja, $spol, $primanja)
+    {
+        $this->id($id);
+        $this->ime($ime);
+        $this->prezime($prezime);
+        $this->datumRodenja($datumRodenja);
+        $this->spol($spol);
+        $this->primanja($primanja);
+    }
 }
+
 
 $zaposlenik = new Zaposlenik();
 $zaposlenik->ime = 'Filip';
+$zaposlenik->prezime = 'Pavlović';
 
 echo $zaposlenik->ime;
+echo $zaposlenik->prezime;
