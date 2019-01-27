@@ -1,45 +1,65 @@
 <?php
+require "Zaposlenik.php";
 
-class Zaposlenik
-{
-    private $id;
-    private $ime;
-    private $prezime;
-    private $datumRodenja;
-    private $spol;
-    private $primanja;
+while( true ) {
 
-    public function __get($property) {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
+    // Print the menu on console
+    ispisIzbornika();
+
+    // Read user choice
+    $choice = trim( fgets(STDIN) );
+
+    // Exit application
+    if( $choice == 6 ) {
+
+        break;
     }
 
-    public function __set($property, $value) {
-        if (isset($property)) {
-            $this->$property = $value;
-        }else{
-            echo 'potrebno je unjeti sve podatke';
+    // Act based on user choice
+    switch( $choice ) {
+
+        case 1:
+        {
+            print_r(Zaposlenik::$sviZaposlenici);
+            echo "Želite li se vratiti na izbornik? (DA/NE)\n";
+            if (strtolower(trim(fgets(STDIN))) !== 'da') {
+                $bool = false;
+            }
+
+
+            break;
         }
-
-        return $this;
-    }
-
-    public function __construct($id, $ime, $prezime, $datumRodenja, $spol, $primanja)
-    {
-        $this->id($id);
-        $this->ime($ime);
-        $this->prezime($prezime);
-        $this->datumRodenja($datumRodenja);
-        $this->spol($spol);
-        $this->primanja($primanja);
+        case 2:
+        {
+            break;
+        }
+        case 3:
+        {
+            break;
+        }
+        case 4:
+        {
+            break;
+        }
+        default:
+        {
+            echo "\n\nNo choice is entered. Please provide a valid choice.\n\n";
+        }
     }
 }
 
+function ispisIzbornika() {
 
-$zaposlenik = new Zaposlenik();
-$zaposlenik->ime = 'Filip';
-$zaposlenik->prezime = 'Pavlović';
+    echo "************ Izbornik ******************\n";
+    echo "1 - Pregled Zaposlenika\n";
+    echo "2 - Unos novog Zaposlenika\n";
+    echo "3 - Promjena podataka postojećem zaposleniku\n";
+    echo "4 - Brisanje Zaposlenika\n";
+    echo "5 - Statistika\n";
+    echo "6 - Izlaz\n";
+}
 
-echo $zaposlenik->ime;
-echo $zaposlenik->prezime;
+function chooseSource() {
+
+    // Logic to choose source location
+}
