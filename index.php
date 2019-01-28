@@ -1,5 +1,6 @@
 <?php
 require "Zaposlenik.php";
+include_once "kontrole.php";
 
 $sviZaposlenici = [];
 while( true ) {
@@ -39,6 +40,9 @@ while( true ) {
         }
         case 3:
         {
+            echo 'Upišite id korisnika kojeg zelite mjenjati';
+            $id = readline();
+            $sviZaposlenici = promjeniKorisnika($sviZaposlenici,$id);
             break;
         }
         case 4:
@@ -63,23 +67,23 @@ function ispisIzbornika() {
     echo "6 - Izlaz\n";
 }
 
-function ispisiZaposlenike($array) {
+function ispisiZaposlenike($niz) {
     echo "*************************************************\n";
-    for ($i = 0; $i < count($array); $i++) {
-        echo "ID: " . $array[$i]->getId() . "\n";
-        echo "IME: " . $array[$i]->getIme(). "\n";
-        echo "PREZIME: " . $array[$i]->getPrezime()."\n";
-        echo "DATUM ROĐENJA: " . $array[$i]->getDatumRodenja()."\n";
-        echo "SPOL: " . $array[$i]->getSpol()."\n";
-        echo "MJESEČNA PRIMANJA: " . $array[$i]->getPrimanja()."\n";
+    for ($i = 0; $i < count($niz); $i++) {
+        echo "ID: " . $niz[$i]->getId() . "\n";
+        echo "IME: " . $niz[$i]->getIme(). "\n";
+        echo "PREZIME: " . $niz[$i]->getPrezime()."\n";
+        echo "DATUM ROĐENJA: " . $niz[$i]->getDatumRodenja()."\n";
+        echo "SPOL: " . $niz[$i]->getSpol()."\n";
+        echo "MJESEČNA PRIMANJA: " . $niz[$i]->getPrimanja()."\n";
         echo "*************************************************\n";
     }
 }
 
-function unosZaposlenika($array = null)
+function unosZaposlenika($niz = null)
 {
     echo "ID: ";
-    $id = kontrolaId(readline(),$array);
+    $id = kontrolaId(readline(),$niz);
     echo "Ime: ";
     $ime = kontrolaImenaIPrezimena(readline());
     echo "Prezime: ";
@@ -89,67 +93,66 @@ function unosZaposlenika($array = null)
     echo "Spol: ";
     $spol = kontrolaSpol(readline());
     echo "Mjesečna primanja: ";
-    $mjesecnaPrimanja = kontrolaMjesecnoPrimanje(readline());
-    return new Zaposlenik($id, $ime, $prezime, $datumRodenja, $spol, $mjesecnaPrimanja);
+    $primanja = kontrolaPrimanja(readline());
+    return new Zaposlenik($id, $ime, $prezime, $datumRodenja, $spol, $primanja);
 }
 
-function kontrolaImenaIPrezimena($var)
-{
-    if($var==="" || preg_match('~[0-9]+~', $var)){
-        echo "Ime/prezime ne može biti prazno i sadržavati brojeve.\nUnesite novo ime/prezime:\n";
-        return kontrolaImenaIPrezimena(readline());
-    }else{
-        return $var;
-    }
-}
-function kontrolaId($var,$array)
-{
-    if($var===""){
-        echo "Morate unijeti ID.\nUnesite novi ID:\n";
-        return kontrolaId(readline(),$array);
-    }
-    for($i=0;$i<count($array);$i++){
-        if($array[$i]->getId()===$var ){
-            echo "Zaposlenik s istim ID-em već postoji.\nUnesite novi ID:\n";
-            return kontrolaId(readline(),$array);
+function promjeniKorisnika($niz,$zaposlenikId){
+    for ($i=0;$i<count($niz);$i++){
+        if ($niz[$i]->getId()=== $zaposlenikId){
+            echo "Koji podatak želite promijeniti (1-6)?\n";
+            echo "1. ID\n";
+            echo "2. IME\n";
+            echo "3. PREZIME\n";
+            echo "4. DATUM ROĐENJA\n";
+            echo "5. SPOL\n";
+            echo "6. MJESEČNA PRIMANJA\n";
+            switch (readline())
+            {
+                case 1:
+                {
+                    echo 'Stara vrijednost id-a je :'. $niz[$i]->getId() . "\n";
+                    echo 'Nova vrijednost je :'. "\n";
+                    $niz[$i]->setId(kontrolaId(readline(),$niz));
+                    break;
+                }
+                case 2:
+                {
+                    echo 'Stara vrijednost imena je :' . $niz[$i]->getIme() . "\n";
+                    echo 'Nova vrijednost imena je :' . "\n";
+                    $niz[$i]->setIme(kontrolaImenaIPrezimena(readline(),$niz));
+                    break;
+                }
+                case 3:
+                {
+                    echo 'Stara vrijednost prezimena je :' . $niz[$i]->getPrezime() . "\n";
+                    echo 'Nova vrijednost prezimena je :' . "\n";
+                    $niz[$i]->setPrezime(kontrolaImenaIPrezimena(readline(),$niz));
+                    break;
+                }
+                case 4:
+                {
+                    echo 'Stara vrijednost datuma rođenja je:' . $niz[$i]->getDatumRodenja() . "\n";
+                    echo 'Nova vrijednost datuma rođenja je :';
+                    $niz[$i]->setDatumRodenja(kontrolaDatum(readline(),$niz));
+                    break;
+                }
+                case 5:
+                {
+                    echo 'Stara vrijednost spola je:' . $niz[$i]->getSpol() . "\n";
+                    echo 'Nova vrijednost spola je :';
+                    $niz[$i]->setSpol(kontrolaSpol(readline(),$niz));
+                    break;
+                }
+                case 6:
+                {
+                    echo 'Stara vrijednost primanja je:' . $niz[$i]->getPrimanja() . "\n";
+                    echo 'Nova vrijednost primanja je :';
+                    $niz[$i]->setPrimanja(kontrolaPrimanja(readline(),$niz));
+                    break;
+                }
+
+            }
         }
-    }
-    return $var;
-}
-
-function kontrolaMjesecnoPrimanje($var)
-{
-    var_dump($var);
-    $var = floatval(str_replace(",",".",$var));
-    var_dump($var);
-    if($var==="" || !is_float($var) || $var<=0){
-        echo "Mjesečno primanje mora biti decimalan broj veći od 0.\nUnesite novu vrijednost:\n";
-        return kontrolaMjesecnoPrimanje(readline());
-    }else{
-        return number_format($var,2,'.','');
-    }
-}
-
-function kontrolaDatum($var)
-{
-    $var = str_replace(["-","/","'\'"], ".",$var);
-    $format = "d.m.Y";
-    $d = DateTime::createFromFormat($format, $var);
-    if($var==="" || preg_match("/^[a-zA-Z]+$/", $var) || $d->format($format)!==$var){
-        echo "Morate upisati datum formata dd.mm.yyyy.\nUnesite novu vrijednost:\n";
-        return kontrolaDatum(readline());
-    }else{
-        return $var;
-    }
-}
-
-function kontrolaSpol($var)
-{
-    var_dump($var);
-    if($var==="" || ($var !== "muški" && $var !== "ženski")){
-        echo "Spol može biti muški ili ženski.\nUnesite novu vrijednost:\n";
-        return kontrolaSpol(readline());
-    }else{
-        return $var;
     }
 }

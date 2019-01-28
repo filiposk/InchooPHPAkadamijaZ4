@@ -2,12 +2,12 @@
 
 class Zaposlenik
 {
-    protected $id;
-    protected $ime;
-    protected $prezime;
-    protected $datumRodenja;
-    protected $spol;
-    protected $primaotected;
+    private $id;
+    private $ime;
+    private $prezime;
+    private $datumRodenja;
+    private $spol;
+    private $primanja;
 
     public function __construct($id, $ime, $prezime, $datumRodenja, $spol, $primanja)
     {
