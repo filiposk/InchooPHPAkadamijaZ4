@@ -171,10 +171,17 @@ function updateEployee($employeeList, $employeeId){
 //
 //}
 
-function deleteEmployee($array, $value, $strict = TRUE)
+function deleteEmployee($employeeList, $employeeId)
 {
-    if(($key = array_search($value, $array, $strict)) !== FALSE) {
-        unset($array[$key]);
+    foreach ($employeeList as $id => $value)
+    {
+        if ($value->getId() === $employeeId)
+        {
+            $employeeList[$value] = null;
+            unset($employeeList[$value]);
+        }
+        $employeeList = array_values($employeeList);
+        return $employeeList;
     }
-    return $array;
+
 }
